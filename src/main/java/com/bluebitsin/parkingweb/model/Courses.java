@@ -1,7 +1,18 @@
 package com.bluebitsin.parkingweb.model;
 
-public class Courses {
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Courses implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
 	private long id;
 	private String name;
 	private String descreption;
