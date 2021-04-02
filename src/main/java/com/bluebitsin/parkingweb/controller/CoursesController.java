@@ -35,9 +35,9 @@ public class CoursesController {
 	}
 	
 	@GetMapping("/courses/{courseId}")
-	public Courses getCourses(@PathVariable String courseId) {
+	public Courses getCourses(@PathVariable long courseId) {
 		
-		return this.courseService.getSingleCourse(Long.parseLong(courseId));
+		return this.courseService.getSingleCourse(courseId);
 	}
 	
 	@PostMapping(path = "/courses", consumes = "application/json")

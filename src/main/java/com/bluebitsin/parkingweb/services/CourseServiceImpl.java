@@ -11,7 +11,6 @@ import com.bluebitsin.parkingweb.model.Courses;
 @Service
 public class CourseServiceImpl implements CourseService {
 
-	List<Courses> list;
 	
 	@Autowired
 	private CourseDao courseDao;
@@ -28,8 +27,6 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public Courses getSingleCourse(long id) {
-		
-		
 		
 		return this.courseDao.getOne(id);
 	}
