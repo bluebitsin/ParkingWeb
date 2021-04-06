@@ -28,7 +28,9 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public Courses getSingleCourse(long id) {
 		
-		return this.courseDao.getOne(id);
+		Courses c = this.courseDao.getOne(id);
+		System.out.println(c.toString());
+		return c;
 	}
 
 	@Override
