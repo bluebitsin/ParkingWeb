@@ -19,7 +19,7 @@ public class ParkingReservation {
 	private int id;
 	
 	@Column(name="reservation_id")
-	private long reservationId;
+	private String reservationId;
 	
 	@Column(name="customer_id")
 	private int customerId;
@@ -45,7 +45,7 @@ public class ParkingReservation {
 		super();
 	}
 
-	public ParkingReservation(int id, long reservationId, int customerId, long reservationTimestamp,
+	public ParkingReservation(int id, String reservationId, int customerId, long reservationTimestamp,
 			int durationInMinuits, Date date, int parkingSlotId, int reservationStatus) {
 		super();
 		this.id = id;
@@ -66,11 +66,11 @@ public class ParkingReservation {
 		this.id = id;
 	}
 
-	public long getReservationId() {
+	public String getReservationId() {
 		return reservationId;
 	}
 
-	public void setReservationId(long reservationId) {
+	public void setReservationId(String reservationId) {
 		this.reservationId = reservationId;
 	}
 
