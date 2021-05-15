@@ -1,5 +1,6 @@
 package com.bluebitsin.parkingweb.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,10 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bluebitsin.parkingweb.model.Customer;
 import com.bluebitsin.parkingweb.model.ParkingTicket;
+import com.bluebitsin.parkingweb.services.ParkingReservationService;
 
 @RestController
 public class ParkingReservationController {
 
+	@Autowired
+	private ParkingReservationService parkingReservationService;
+	
 	@GetMapping("/index")
 	public String index() {
 		
@@ -53,9 +58,7 @@ public class ParkingReservationController {
 			produces = "application/text")
 	public ParkingTicket addReservation(@RequestBody Customer customer) {
 		
-		int customerId = customer.getCustomerId();
-		
-		return null;
+		return parkingReservationService.addParkingReservation(customer);
 	}
 	
 	/*
