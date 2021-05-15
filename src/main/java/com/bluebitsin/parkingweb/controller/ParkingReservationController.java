@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bluebitsin.parkingweb.model.Customer;
 import com.bluebitsin.parkingweb.model.ParkingTicket;
 
 @RestController
@@ -45,11 +47,13 @@ public class ParkingReservationController {
 	/*
 	 * Book or Add new  parking slot
 	 * @Method = POST
-	 * @param addReservation
+	 * @param customerId
 	 */
-	@PostMapping(path = "/parking/{customerId}",
-			consumes = "application/json", produces = "application/json")
-	public ParkingTicket addReservation(@RequestBody ParkingTicket addReservation) {
+	@PostMapping(path = "/parking/add", consumes = "application/json",
+			produces = "application/text")
+	public ParkingTicket addReservation(@RequestBody Customer customer) {
+		
+		int customerId = customer.getCustomerId();
 		
 		return null;
 	}
