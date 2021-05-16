@@ -7,7 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "parking_slot_reservation")
@@ -24,12 +29,14 @@ public class ParkingReservation {
 	@Column(name="customer_id")
 	private int customerId;
 	
+	@CreationTimestamp
 	@Column(name="reservation_timestamp")
 	private long reservationTimestamp;
 	
 	@Column(name="dutation_in_minuits")
 	private int durationInMinuits;
 
+	@CreatedDate
 	@Column(name="booking_date")
 	private Date date;
 	
@@ -38,7 +45,9 @@ public class ParkingReservation {
 	
 	@Column(name="reservation_status")
 	private int reservationStatus;
-
+	
+	@OneToOne(mappedBy = "parking_slot_reservation")
+	private ParkingSlip parkingSlip;
 	
 	
 	public ParkingReservation() {

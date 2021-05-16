@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bluebitsin.parkingweb.dao.ParkingReservationDao;
 import com.bluebitsin.parkingweb.model.Customer;
+import com.bluebitsin.parkingweb.model.ParkingReservation;
 import com.bluebitsin.parkingweb.model.ParkingTicket;
 
 @Service
@@ -19,8 +20,8 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 	@Override
 	public ParkingTicket addParkingReservation(Customer customer) {
-		// 
-		parkingReservationDao.save(null);
+		// Create Booking
+		parkingReservationDao.save(new ParkingReservation());
 		return null;
 	}
 	
