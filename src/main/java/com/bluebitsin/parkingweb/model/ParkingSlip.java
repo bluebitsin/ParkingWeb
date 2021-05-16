@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -19,7 +20,8 @@ public class ParkingSlip {
 	@Column(name="id")
 	private int id;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "reservation_id", nullable = false)
 	private ParkingReservation parkingReservation;
 	
 	@Column(name="reservation_id")

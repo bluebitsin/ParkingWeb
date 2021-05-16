@@ -12,8 +12,4 @@ public class ParkingWebApplication {
 		SpringApplication.run(ParkingWebApplication.class, args);	
 	}
 
-	public static String generateRandomStringByUUID() {
-        return UUID.randomUUID().toString();
-    }
-	
 }

@@ -2,8 +2,10 @@ package com.bluebitsin.parkingweb.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,10 +48,20 @@ public class ParkingReservation {
 	@Column(name="reservation_status")
 	private int reservationStatus;
 	
-	@OneToOne(mappedBy = "parking_slot_reservation")
+	@OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "parkingReservation")
 	private ParkingSlip parkingSlip;
 	
 	
+	public ParkingSlip getParkingSlip() {
+		return parkingSlip;
+	}
+
+	public void setParkingSlip(ParkingSlip parkingSlip) {
+		this.parkingSlip = parkingSlip;
+	}
+
 	public ParkingReservation() {
 		super();
 	}
