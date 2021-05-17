@@ -6,4 +6,5 @@ import com.bluebitsin.parkingweb.model.ParkingTicket;
 public interface ParkingReservationService {
 
 	public ParkingTicket addParkingReservation(Customer customer);
+	
 }
