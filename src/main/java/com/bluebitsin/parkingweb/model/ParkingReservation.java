@@ -5,17 +5,13 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "parking_slot_reservation")
@@ -32,12 +28,10 @@ public class ParkingReservation {
 	@Column(name="customer_id")
 	private int customerId;
 	
-	@Column(name="reservation_timestamp")
-	private long reservationTimestamp;
-	
 	@Column(name="dutation_in_minuits")
 	private int durationInMinuits;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="booking_date")
 	private Date date;
 	
@@ -47,7 +41,7 @@ public class ParkingReservation {
 	@Column(name="reservation_status")
 	private int reservationStatus;
 	
-	@Transient
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "parkingReservation")
 	private ParkingSlip parkingSlip;
 	
 	
@@ -63,13 +57,12 @@ public class ParkingReservation {
 		super();
 	}
 
-	public ParkingReservation(int id, String reservationId, int customerId, long reservationTimestamp,
+	public ParkingReservation(int id, String reservationId, int customerId,
 			int durationInMinuits, Date date, int parkingSlotId, int reservationStatus) {
 		super();
 		this.id = id;
 		this.reservationId = reservationId;
 		this.customerId = customerId;
-		this.reservationTimestamp = reservationTimestamp;
 		this.durationInMinuits = durationInMinuits;
 		this.date = date;
 		this.parkingSlotId = parkingSlotId;
@@ -98,14 +91,6 @@ public class ParkingReservation {
 
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
-	}
-
-	public long getReservationTimestamp() {
-		return reservationTimestamp;
-	}
-
-	public void setReservationTimestamp(long reservationTimestamp) {
-		this.reservationTimestamp = reservationTimestamp;
 	}
 
 	public int getDurationInMinuits() {
@@ -143,7 +128,7 @@ public class ParkingReservation {
 	@Override
 	public String toString() {
 		return "ParkingReservation [id=" + id + ", reservationId=" + reservationId + ", customerId=" + customerId
-				+ ", reservationTimestamp=" + reservationTimestamp + ", durationInMinuits=" + durationInMinuits
+				+  ", durationInMinuits=" + durationInMinuits
 				+ ", date=" + date + ", parkingSlotId=" + parkingSlotId + ", reservationStatus=" + reservationStatus
 				+ "]";
 	}

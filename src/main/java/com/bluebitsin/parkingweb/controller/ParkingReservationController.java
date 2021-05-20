@@ -2,6 +2,7 @@ package com.bluebitsin.parkingweb.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bluebitsin.parkingweb.model.Customer;
 import com.bluebitsin.parkingweb.model.ParkingTicket;
+import com.bluebitsin.parkingweb.model.QRData;
 import com.bluebitsin.parkingweb.services.ParkingReservationService;
 
 @RestController
@@ -32,10 +34,10 @@ public class ParkingReservationController {
 	 * @Method = GET
 	 * @param customerId
 	 */
-	@GetMapping("/parking/{customerId}")
+	@GetMapping("/parking/all/{customerId}")
 	public String getAllReservations(@PathVariable int customerId) {
 		
-		return null;
+		return "Mukesh";
 	}
 	
 	/*
@@ -43,10 +45,10 @@ public class ParkingReservationController {
 	 * @Method = GET
 	 * @param reservationId
 	 */
-	@GetMapping("/parking/{reservationId}")
+	@GetMapping("/parking/one/{reservationId}")
 	public String getReservation(@PathVariable int reservationId) {
 		
-		return null;
+		return "Narayan";
 	}
 	
 	/*
@@ -55,10 +57,22 @@ public class ParkingReservationController {
 	 * @param customerId
 	 */
 	@PostMapping(path = "/parking/add", consumes = "application/json",
-			produces = "application/text")
+			produces = "application/json")
 	public ParkingTicket addReservation(@RequestBody Customer customer) {
 		
 		return parkingReservationService.addParkingReservation(customer);
+	}
+	
+	/*
+	 * Verify  existing reservation
+	 * @Method = GET
+	 * @param  reservationId
+	 */
+	@GetMapping(path = "/parking/verify/{reservationId}", produces = "application/json")
+	public QRData verifyReservation(@PathVariable String reservationId) {
+		
+		return parkingReservationService.verifyParkingTicket(reservationId);
+		
 	}
 	
 	/*
