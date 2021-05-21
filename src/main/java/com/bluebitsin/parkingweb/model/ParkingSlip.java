@@ -14,52 +14,51 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="parking_slip")
+@Table(name = "parking_slip")
 public class ParkingSlip {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="id")
+	@Column(name = "id")
 	private int id;
-	
+
 	@OneToOne
-	@JoinColumn(name="pr_id", nullable=false)
+	@JoinColumn(name = "pr_id", nullable = false)
 	private ParkingReservation parkingReservation;
-	
-	@Column(name="reservation_id")
+
+	@Column(name = "reservation_id")
 	private String reservationId;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="actual_entry_time")
+	@Column(name = "actual_entry_time")
 	private Date actualEntryTime;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="actual_exit_time")
+	@Column(name = "actual_exit_time")
 	private Date actualExitTime;
-	
-	@Column(name="basic_cost")
+
+	@Column(name = "basic_cost")
 	private float basicCost;
-	
-	@Column(name="penalty")
+
+	@Column(name = "penalty")
 	private float penalty;
-	
-	@Column(name="total_cost")
-	private float totalCost;
-	
-	@Column(name="is_paid")
-	private int isPaid;
-	
-	@Column(name="scan_status")
+
+	@Column(name = "check_out_agent_id")
+	private String checkoutAgentId;
+
+	@Column(name = "check_in_agent_id")
+	private String checkInAgentId;
+
+	@Column(name = "scan_status")
 	private int scanStatus;
 
-	
 	public ParkingSlip() {
 		super();
 	}
-	
 
 	public ParkingSlip(int id, ParkingReservation parkingReservation, String reservationId, Date actualEntryTime,
-			Date actualExitTime, float basicCost, float penalty, float totalCost, int isPaid, int scanStatus) {
+			Date actualExitTime, float basicCost, float penalty, String checkoutAgentId, String checkInAgentId,
+			int scanStatus) {
 		super();
 		this.id = id;
 		this.parkingReservation = parkingReservation;
@@ -68,16 +67,14 @@ public class ParkingSlip {
 		this.actualExitTime = actualExitTime;
 		this.basicCost = basicCost;
 		this.penalty = penalty;
-		this.totalCost = totalCost;
-		this.isPaid = isPaid;
+		this.checkoutAgentId = checkoutAgentId;
+		this.checkInAgentId = checkInAgentId;
 		this.scanStatus = scanStatus;
 	}
-
 
 	public int getId() {
 		return id;
 	}
-
 
 	public void setId(int id) {
 		this.id = id;
@@ -87,11 +84,9 @@ public class ParkingSlip {
 		return parkingReservation;
 	}
 
-
 	public void setParkingReservation(ParkingReservation parkingReservation) {
 		this.parkingReservation = parkingReservation;
 	}
-
 
 	public String getReservationId() {
 		return reservationId;
@@ -133,20 +128,20 @@ public class ParkingSlip {
 		this.penalty = penalty;
 	}
 
-	public float getTotalCost() {
-		return totalCost;
+	public String getCheckoutAgentId() {
+		return checkoutAgentId;
 	}
 
-	public void setTotalCost(float totalCost) {
-		this.totalCost = totalCost;
+	public void setCheckoutAgentId(String checkoutAgentId) {
+		this.checkoutAgentId = checkoutAgentId;
 	}
 
-	public int getIsPaid() {
-		return isPaid;
+	public String getCheckInAgentId() {
+		return checkInAgentId;
 	}
 
-	public void setIsPaid(int isPaid) {
-		this.isPaid = isPaid;
+	public void setCheckInAgentId(String checkInAgentId) {
+		this.checkInAgentId = checkInAgentId;
 	}
 
 	public int getScanStatus() {
@@ -161,8 +156,8 @@ public class ParkingSlip {
 	public String toString() {
 		return "ParkingSlip [id=" + id + ", parkingReservation=" + parkingReservation + ", reservationId="
 				+ reservationId + ", actualEntryTime=" + actualEntryTime + ", actualExitTime=" + actualExitTime
-				+ ", basicCost=" + basicCost + ", penalty=" + penalty + ", totalCost=" + totalCost + ", isPaid="
-				+ isPaid + ", scanStatus=" + scanStatus + "]";
+				+ ", basicCost=" + basicCost + ", penalty=" + penalty + ", checkoutAgentId=" + checkoutAgentId
+				+ ", checkInAgentId=" + checkInAgentId + ", scanStatus=" + scanStatus + "]";
 	}
-	
+
 }

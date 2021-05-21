@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bluebitsin.parkingweb.model.Customer;
 import com.bluebitsin.parkingweb.model.ParkingTicket;
 import com.bluebitsin.parkingweb.model.QRData;
+import com.bluebitsin.parkingweb.model.VerifyQRData;
 import com.bluebitsin.parkingweb.services.ParkingReservationService;
 
 @RestController
@@ -69,7 +70,7 @@ public class ParkingReservationController {
 	 * @param  reservationId
 	 */
 	@GetMapping(path = "/parking/verify/{reservationId}", produces = "application/json")
-	public QRData verifyReservation(@PathVariable String reservationId) {
+	public VerifyQRData verifyReservation(@PathVariable String reservationId) {
 		
 		return parkingReservationService.verifyParkingTicket(reservationId);
 		

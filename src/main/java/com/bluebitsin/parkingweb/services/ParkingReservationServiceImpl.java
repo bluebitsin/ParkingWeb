@@ -10,7 +10,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +20,7 @@ import com.bluebitsin.parkingweb.model.ParkingSlip;
 import com.bluebitsin.parkingweb.model.ParkingSlot;
 import com.bluebitsin.parkingweb.model.ParkingTicket;
 import com.bluebitsin.parkingweb.model.QRData;
+import com.bluebitsin.parkingweb.model.VerifyQRData;
 
 import helper.Utility;
 
@@ -74,9 +74,9 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			parkingSlip.setActualEntryTime(null);
 			parkingSlip.setActualExitTime(null);
 			parkingSlip.setBasicCost(0);
-			parkingSlip.setIsPaid(0);
+			parkingSlip.setCheckInAgentId(null);
 			parkingSlip.setPenalty(0);
-			parkingSlip.setTotalCost(0);
+			parkingSlip.setCheckoutAgentId(null);
 			reservation.setParkingSlip(parkingSlip);
 
 			// insert new record in ParkingReservation and ParkingSlip Table
@@ -184,13 +184,111 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 	 * @return QRData
 	 */
 	@Override
-	public QRData verifyParkingTicket(String reservationId) {
+	public VerifyQRData verifyParkingTicket(String reservationId) {
 		
+		VerifyQRData verifyQRData = new VerifyQRData();
+		QRData qrData = null;
+		
+		if(reservationId != null && !reservationId.trim().isEmpty()) {
+			
+			// check if reservationId present && reservationStatus is valid in Parking Reservation Table
+			qrData = validateParkingTicket(reservationId);
+			System.out.println("isTicketValid: "+qrData.isQrValid());
+			
+			if(!qrData.isQrValid()) {
+				
+				// if not present, then say "Invalid parking ticket, there is no reservation for this ticket"
+				qrData.setMessage("Invalid parking ticket, there is no reservation for this ticket");
+				
+			}else {
+				
+				// else, get data from reservation and customer table and build QRData and return
+				verifyQRData.setResponseStatus(true);
+				verifyQRData.setResponseCode(200);
+				verifyQRData.setQrData(qrData);
+			}
+			
+			
+		}else {
+			
+			verifyQRData.setResponseStatus(false);
+			verifyQRData.setResponseCode(404);
+			verifyQRData.setQrData(qrData);
+		}
+		
+		return verifyQRData;
+	}
+
+	private QRData validateParkingTicket(String reservationId) {
+		
+		EntityManager session = entityManagerFactory.createEntityManager();
 		QRData qrData = new QRData();
-		qrData.setMessage("QR is Verified");
 		
+		try {
+
+			//query ParkingReservation and ParkingSlip Table using INNER JOIN
+			String sql1 = "from ParkingReservation pr INNER JOIN pr.parkingSlip where "
+					+ "pr.reservationId=:bookingId and pr.reservationStatus=:status";
+			
+			Query query1 = session.createQuery(sql1);
+			query1.setParameter("bookingId", reservationId);
+			query1.setParameter("status", 0);
+			
+			List<Object[]> listResult = query1.getResultList();
+			System.out.println("List_SIZE_MKN "+listResult.size());
+			
+			if(!(listResult.size() > 0)) {
+				
+				qrData.setQrValid(false);
+				
+				return qrData;
+				
+			}else {
+				
+				ParkingReservation reservationData = null;
+				ParkingSlip reservationSlip = null;
+				for (Object[] aRow : listResult) {
+					reservationData = (ParkingReservation) aRow[0];
+					reservationSlip = (ParkingSlip) aRow[1];
+				    System.out.println(reservationData.toString() + " - " + reservationSlip.toString());
+				}
+				
+				
+				// query customer record on basis of reservation result
+				int customerId = reservationData.getCustomerId();
+				System.out.println("Customer Id: "+customerId);
+				
+				String sql2 = "from Customer where "
+						+ "customerId=:cID";
+				Query query2 = session.createQuery(sql2, Customer.class);
+				query2.setParameter("cID", customerId);
+				
+				Customer customer = (Customer) query2.getSingleResult();
+				System.out.println(customer.toString());
+				
+				
+				//set all properties
+				qrData.setBookingId(reservationData.getId());
+				qrData.setCarModel(customer.getVehicleModel());
+				qrData.setCarNumber(customer.getVehicleNumber());
+				qrData.setMessage("Parking Ticket is Valid");
+				qrData.setQrValid(true);
+				qrData.setScanStatus(reservationSlip.getScanStatus());
+				qrData.setTimestamp(reservationData.getDate());
+
+				return qrData;
+			}
+			
+		} catch (NoResultException e) {
+
+			qrData.setQrValid(false);
+			return qrData;
+
+		} finally {
+			if (session.isOpen())
+				session.close();
+		}
 		
-		return qrData;
 	}
 	
 	
