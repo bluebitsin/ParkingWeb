@@ -1,6 +1,5 @@
 package com.bluebitsin.parkingweb.services;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -419,13 +418,14 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 		
 		// check if user id present or not
 		boolean checkUser = isUserPresent(customerId);
+		List<ParkingTicket> allReservations = null;
 		
 		if(checkUser) {
 			
 			System.out.println("CUSTOMER IS VALID");
 			
 			// now get this user's all reservations
-			List<ParkingTicket> allReservations = getReservarions(customerId);
+			allReservations = getReservarions(customerId);
 			
 		}else {
 			
@@ -434,12 +434,36 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 		}
 		
 		
-		return null;
+		return allReservations;
 	}
 
 	private List<ParkingTicket> getReservarions(int customerId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		EntityManager session = entityManagerFactory.createEntityManager();
+		List<ParkingTicket> allBookings = null;
+		try {
+			
+			// Query Reservation Table 
+			String sql = "FROM ParkingReservation WHERE customerId = :cid";
+			Query query = session.createQuery(sql);
+			query.setParameter("cid", customerId);
+			
+			List<ParkingReservation> reservations = query.getResultList();
+			System.out.println("All Reservation Size: "+reservations.size());
+			
+			return allBookings;
+			
+		}catch(NoResultException e) {
+			
+			return allBookings;
+			
+		}finally {
+			
+			if(session.isOpen()) {
+				
+				session.close();
+			}
+		}
 	}
 
 	private boolean isUserPresent(int customerId) {
