@@ -451,6 +451,17 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			List<ParkingReservation> reservations = query.getResultList();
 			System.out.println("All Reservation Size: "+reservations.size());
 			
+			for (ParkingReservation pr : reservations) {
+				
+				ParkingTicket ticket = new ParkingTicket();
+				ticket.setDate(pr.getDate());
+				ticket.setFloor(0);
+				ticket.setLocation("");
+				ticket.setReservationId(pr.getReservationId());
+				ticket.setSlotNumber(0);
+				ticket.setWing('R');
+			}
+			
 			return allBookings;
 			
 		}catch(NoResultException e) {
