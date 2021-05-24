@@ -10,6 +10,7 @@ public class ParkingTicket {
 	private int slotNumber;
 	private int floor;
 	private char wing;
+	private int reservationStatus;
 	
 	
 	public ParkingTicket() {
@@ -78,10 +79,21 @@ public class ParkingTicket {
 	}
 
 
+	public int getReservationStatus() {
+		return reservationStatus;
+	}
+
+
+	public void setReservationStatus(int reservationStatus) {
+		this.reservationStatus = reservationStatus;
+	}
+
+
 	@Override
 	public String toString() {
 		return "ParkingTicket [reservationId=" + reservationId + ", date=" + date + ", location=" + location
-				+ ", slotNumber=" + slotNumber + ", floor=" + floor + ", wing=" + wing + "]";
+				+ ", slotNumber=" + slotNumber + ", floor=" + floor + ", wing=" + wing + ", reservationStatus="
+				+ reservationStatus + "]";
 	}
 	
 	

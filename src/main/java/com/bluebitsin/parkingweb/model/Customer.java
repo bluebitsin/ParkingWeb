@@ -35,13 +35,16 @@ public class Customer {
 	
 	@Column(name = "contact_number")
 	private int contactNumber;
+	
+	@Column(name = "password")
+	private String password;
 
 	public Customer() {
 		super();
 	}
 	
 	public Customer(int customerId, String name, String vehicleNumber, String vehicleModel,
-			Date vehicleRegistrationDate, boolean isRegularCustomer, int contactNumber) {
+			Date vehicleRegistrationDate, boolean isRegularCustomer, int contactNumber, String password) {
 		super();
 		this.customerId = customerId;
 		this.name = name;
@@ -50,6 +53,7 @@ public class Customer {
 		this.vehicleRegistrationDate = vehicleRegistrationDate;
 		this.isRegularCustomer = isRegularCustomer;
 		this.contactNumber = contactNumber;
+		this.password = password;
 	}
 
 	public int getCustomerId() {
@@ -108,14 +112,20 @@ public class Customer {
 		this.contactNumber = contactNumber;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
 		return "Customer [customerId=" + customerId + ", name=" + name + ", vehicleNumber=" + vehicleNumber
 				+ ", vehicleModel=" + vehicleModel + ", vehicleRegistrationDate=" + vehicleRegistrationDate
-				+ ", isRegularCustomer=" + isRegularCustomer + ", contactNumber=" + contactNumber + "]";
+				+ ", isRegularCustomer=" + isRegularCustomer + ", contactNumber=" + contactNumber + ", password="
+				+ password + "]";
 	}
 
-	
-	
-	
 }

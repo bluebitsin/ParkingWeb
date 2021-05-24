@@ -1,5 +1,6 @@
 package com.bluebitsin.parkingweb.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -98,6 +99,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 				ticket.setReservationId(reservationId);
 				ticket.setSlotNumber(slot.getSlotNumber());
 				ticket.setWing(slot.getWingCode());
+				ticket.setReservationStatus(reservationStatus);
 				System.out.println("Parking Ticket is Generated.");
 
 			}
@@ -306,14 +308,14 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 			// update reservation and parking slip
 			boolean isUpdate = updateScanStatus(scanStatus);
-			System.out.println("IS_UPDATE "+isUpdate);
-			
-			if(isUpdate) {
-				
+			System.out.println("IS_UPDATE " + isUpdate);
+
+			if (isUpdate) {
+
 				return new ResponseEntity<>(HttpStatus.OK);
-				
-			}else {
-				
+
+			} else {
+
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 
@@ -325,9 +327,9 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 	}
 
-	
 	/**
 	 * Get All Parking Reservation
+	 * 
 	 * @param customerId
 	 * @return List<ParkingTicket>
 	 */
@@ -343,12 +345,12 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			String sql1 = null;
 			if (scanStatus.getCheckStatus() == 1) {
 
-				sql1 = "UPDATE ParkingSlip SET " + "scanStatus = 2" + ", actualEntryTime = '"+ Utility.getDateTime() 
+				sql1 = "UPDATE ParkingSlip SET " + "scanStatus = 2" + ", actualEntryTime = '" + Utility.getDateTime()
 						+ "', checkInAgentId = '" + scanStatus.getAgentId() + "' WHERE reservationId=:rid ";
 
 			} else if (scanStatus.getCheckStatus() == 2) {
 
-				sql1 = "UPDATE ParkingSlip SET " + "scanStatus = 3" + ", actualExitTime = '"+ Utility.getDateTime() 
+				sql1 = "UPDATE ParkingSlip SET " + "scanStatus = 3" + ", actualExitTime = '" + Utility.getDateTime()
 						+ "', checkoutAgentId = '" + scanStatus.getAgentId() + "' WHERE reservationId=:rid ";
 
 			} else {
@@ -362,7 +364,8 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			int rowCount1 = nativeQuery1.executeUpdate();
 			System.out.println("Rows Affected: " + rowCount1);
 
-			// update reservation and ParkingSlot tables if rowCount1 > 0 and scanStatus == 2
+			// update reservation and ParkingSlot tables if rowCount1 > 0 and scanStatus ==
+			// 2
 			int rowCount2 = 0, rowCount3 = 0;
 			if (rowCount1 > 0 && scanStatus.getCheckStatus() == 2) {
 
@@ -372,9 +375,8 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 				nativeQuery2.setParameter("rid", scanStatus.getReservationId());
 				rowCount2 = nativeQuery2.executeUpdate();
 				System.out.println("Rows Affected: " + rowCount2);
-				
-				String sql3 = "UPDATE ParkingSlot "
-						+ "SET isSlotBooked = 0 "
+
+				String sql3 = "UPDATE ParkingSlot " + "SET isSlotBooked = 0 "
 						+ "WHERE id=some(SELECT r.parkingSlotId FROM ParkingReservation r WHERE id=:bid) ";
 				System.out.println(sql3);
 				Query nativeQuery3 = session.createQuery(sql3);
@@ -387,10 +389,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			if (rowCount1 > 0 && scanStatus.getCheckStatus() == 1) {
 
 				return true;
-			} else if (rowCount1 > 0 
-					&& rowCount2 > 0
-					&& rowCount3 > 0
-					&& scanStatus.getCheckStatus() == 2) {
+			} else if (rowCount1 > 0 && rowCount2 > 0 && rowCount3 > 0 && scanStatus.getCheckStatus() == 2) {
 
 				return true;
 			} else {
@@ -412,77 +411,89 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 	@Override
 	public List<ParkingTicket> getAllParkingReservation(int customerId) {
-		
-		// using response codes 400 = invalid user id, 404 = records not available in present time,
+
+		// using response codes 400 = invalid user id, 404 = records not available in
+		// present time,
 		// 200 = success, 500 = server internal error
-		
+
 		// check if user id present or not
 		boolean checkUser = isUserPresent(customerId);
 		List<ParkingTicket> allReservations = null;
-		
-		if(checkUser) {
-			
+
+		if (checkUser) {
+
 			System.out.println("CUSTOMER IS VALID");
-			
+
 			// now get this user's all reservations
 			allReservations = getReservarions(customerId);
-			
-		}else {
-			
+
+		} else {
+
 			//
 			System.out.println("INVALID CUSTOMER ID");
 		}
-		
-		
+
 		return allReservations;
 	}
 
 	private List<ParkingTicket> getReservarions(int customerId) {
-		
+
 		EntityManager session = entityManagerFactory.createEntityManager();
 		List<ParkingTicket> allBookings = null;
 		try {
-			
-			// Query Reservation Table 
-			String sql = "FROM ParkingReservation WHERE customerId = :cid";
-			Query query = session.createQuery(sql);
+
+			// Query Reservation Table
+			/*
+			   SELECT p.reservation_id, p.booking_date, p.reservation_status, s.slot_number,
+			   s.wing_code FROM `parking_slot_reservation` AS p INNER JOIN parking_slot AS s
+			   ON p.parking_slot_id = s.id and p.customer_id = 107 ORDER BY p.booking_date DESC
+			 */
+			String sql = "SELECT p.reservation_id, p.booking_date, p.reservation_status, s.slot_number, s.wing_code "
+					+ "FROM parking_slot_reservation AS p INNER JOIN parking_slot AS s "
+					+ "ON p.parking_slot_id = s.id and p.customer_id = :cid ORDER BY p.booking_date DESC";
+			Query query = session.createNativeQuery(sql);
 			query.setParameter("cid", customerId);
-			
-			List<ParkingReservation> reservations = query.getResultList();
-			System.out.println("All Reservation Size: "+reservations.size());
-			
-			for (ParkingReservation pr : reservations) {
+
+			List<Object[]> reservations = query.getResultList();
+			System.out.println("All Reservation Size: " + reservations.size());
+
+			allBookings = new ArrayList<ParkingTicket>();
+			for (Object[] objects : reservations) {
 				
 				ParkingTicket ticket = new ParkingTicket();
-				ticket.setDate(pr.getDate());
+				ticket.setReservationId((String)objects[0]);
+				ticket.setDate((Date)objects[1]);
+				ticket.setReservationStatus((int)objects[2]);
+				ticket.setSlotNumber((int)objects[3]);
+				ticket.setWing((char)objects[4]);
 				ticket.setFloor(0);
-				ticket.setLocation("");
-				ticket.setReservationId(pr.getReservationId());
-				ticket.setSlotNumber(0);
-				ticket.setWing('R');
-			}
-			
-			return allBookings;
-			
-		}catch(NoResultException e) {
-			
-			return allBookings;
-			
-		}finally {
-			
-			if(session.isOpen()) {
+				ticket.setLocation("FF1 Square One Plaza, Ratan Khand, Sharda Nagar, Lucknow - 226002");
 				
+				allBookings.add(ticket);
+				
+			}
+
+			return allBookings;
+
+		} catch (NoResultException e) {
+
+			return allBookings;
+
+		} finally {
+
+			if (session.isOpen()) {
+
 				session.close();
 			}
 		}
 	}
 
 	private boolean isUserPresent(int customerId) {
-		
+
 		EntityManager session = entityManagerFactory.createEntityManager();
-		
+
 		try {
-			
+
 			String sql = "FROM Customer WHERE customerId = :cid";
 
 			Query query = session.createQuery(sql);
@@ -490,29 +501,28 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 			Customer user = (Customer) query.getSingleResult();
 			System.out.println(user.toString());
-			
-			if(user != null && user.getCustomerId() == customerId) {
-				
+
+			if (user != null && user.getCustomerId() == customerId) {
+
 				return true;
-			}else {
-				
+			} else {
+
 				return false;
 			}
-			
-		}catch(NoResultException e) {
-		
+
+		} catch (NoResultException e) {
+
 			return false;
-			
+
 		} finally {
-			
-			if(session.isOpen()) {
-				
+
+			if (session.isOpen()) {
+
 				session.close();
 			}
-			
+
 		}
-		
+
 	}
 
-	
 }
