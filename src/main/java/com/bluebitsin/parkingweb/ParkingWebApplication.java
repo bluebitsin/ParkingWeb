@@ -7,6 +7,12 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 public class ParkingWebApplication extends SpringBootServletInitializer {
 
+	/*
+	 * @Override protected SpringApplicationBuilder
+	 * configure(SpringApplicationBuilder builder){ return
+	 * builder.sources(ParkingWebApplication.class); }
+	 */
+	
 	public static void main(String[] args) {
 		SpringApplication.run(ParkingWebApplication.class, args);	
 	}

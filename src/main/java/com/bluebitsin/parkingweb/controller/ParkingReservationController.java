@@ -25,7 +25,7 @@ public class ParkingReservationController {
 	@Autowired
 	private ParkingReservationService parkingReservationService;
 
-	@GetMapping("/index")
+	@GetMapping("/reservation/index")
 	public String index() {
 
 		return "All is good";

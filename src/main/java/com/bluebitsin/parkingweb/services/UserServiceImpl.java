@@ -7,15 +7,14 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bluebitsin.parkingweb.dao.UserDao;
 import com.bluebitsin.parkingweb.model.Customer;
 import com.bluebitsin.parkingweb.model.User;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserDao userDao;
+	//@Autowired
+	//private UserDao userDao;
 	
 	@Autowired
 	private EntityManagerFactory entityManagerFactory;

@@ -51,7 +51,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 			// if yes, get slot no - randomly get one available slot
 			ParkingSlot slot = getRandomSlot(slotList);
-			System.out.println(slot.toString());
+			//System.out.println(slot.toString());
 
 			// gather other required information for booking
 			String reservationId = Utility.generateRandomStringByUUID();
@@ -85,7 +85,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 			// insert new record in ParkingReservation and ParkingSlip Table
 			parkingReservationDao.save(reservation);
-			System.out.println("New Booking Created.");
+			//System.out.println("New Booking Created.");
 
 			// and update ParkingSlot 'slot' to occupied
 			int rowCount = updateOccupiedSlot(slot);
@@ -100,7 +100,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 				ticket.setSlotNumber(slot.getSlotNumber());
 				ticket.setWing(slot.getWingCode());
 				ticket.setReservationStatus(reservationStatus);
-				System.out.println("Parking Ticket is Generated.");
+				//System.out.println("Parking Ticket is Generated.");
 
 			}
 
@@ -108,7 +108,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 		} else {
 			// if no, return null
-			System.out.println("No Slot Availaible");
+			//System.out.println("No Slot Availaible");
 
 			return ticket;
 		}
@@ -120,6 +120,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private List<ParkingSlot> getAllAvailableSlots() {
 
 		EntityManager session = entityManagerFactory.createEntityManager();
@@ -164,11 +165,11 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 			tx.begin();
 			String sql = "UPDATE ParkingSlot SET isSlotBooked = 1 WHERE id=:slotId ";
-			System.out.println(sql);
+			//System.out.println(sql);
 			Query nativeQuery = session.createQuery(sql);
 			nativeQuery.setParameter("slotId", slot.getId());
 			int rowCount = nativeQuery.executeUpdate();
-			System.out.println("Rows Affected: " + rowCount);
+			//System.out.println("Rows Affected: " + rowCount);
 			return rowCount;
 
 		} catch (NoResultException e) {
@@ -198,7 +199,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			// check if reservationId present && reservationStatus is valid in Parking
 			// Reservation Table
 			qrData = validateParkingTicket(reservationId);
-			System.out.println("isTicketValid: " + qrData.isQrValid());
+			//System.out.println("isTicketValid: " + qrData.isQrValid());
 
 			if (!qrData.isQrValid()) {
 
@@ -225,6 +226,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 		return verifyQRData;
 	}
 
+	@SuppressWarnings("unchecked")
 	private QRData validateParkingTicket(String reservationId) {
 
 		EntityManager session = entityManagerFactory.createEntityManager();
@@ -241,7 +243,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			query1.setParameter("status", 0);
 
 			List<Object[]> listResult = query1.getResultList();
-			System.out.println("List_SIZE_MKN " + listResult.size());
+			//System.out.println("List_SIZE_MKN " + listResult.size());
 
 			if (!(listResult.size() > 0)) {
 
@@ -256,19 +258,19 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 				for (Object[] aRow : listResult) {
 					reservationData = (ParkingReservation) aRow[0];
 					reservationSlip = (ParkingSlip) aRow[1];
-					System.out.println(reservationData.toString() + " - " + reservationSlip.toString());
+					//System.out.println(reservationData.toString() + " - " + reservationSlip.toString());
 				}
 
 				// query customer record on basis of reservation result
 				int customerId = reservationData.getCustomerId();
-				System.out.println("Customer Id: " + customerId);
+				//System.out.println("Customer Id: " + customerId);
 
 				String sql2 = "from Customer where " + "customerId=:cID";
 				Query query2 = session.createQuery(sql2, Customer.class);
 				query2.setParameter("cID", customerId);
 
 				Customer customer = (Customer) query2.getSingleResult();
-				System.out.println(customer.toString());
+				//System.out.println(customer.toString());
 
 				// set all properties
 				qrData.setBookingId(reservationData.getId());
@@ -308,7 +310,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 			// update reservation and parking slip
 			boolean isUpdate = updateScanStatus(scanStatus);
-			System.out.println("IS_UPDATE " + isUpdate);
+			//System.out.println("IS_UPDATE " + isUpdate);
 
 			if (isUpdate) {
 
@@ -358,11 +360,11 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 				return false;
 			}
 
-			System.out.println(sql1);
+			//System.out.println(sql1);
 			Query nativeQuery1 = session.createQuery(sql1);
 			nativeQuery1.setParameter("rid", scanStatus.getReservationId());
 			int rowCount1 = nativeQuery1.executeUpdate();
-			System.out.println("Rows Affected: " + rowCount1);
+			//System.out.println("Rows Affected: " + rowCount1);
 
 			// update reservation and ParkingSlot tables if rowCount1 > 0 and scanStatus ==
 			// 2
@@ -370,19 +372,19 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			if (rowCount1 > 0 && scanStatus.getCheckStatus() == 2) {
 
 				String sql2 = "UPDATE ParkingReservation SET reservationStatus = 1 WHERE reservationId=:rid ";
-				System.out.println(sql2);
+				//System.out.println(sql2);
 				Query nativeQuery2 = session.createQuery(sql2);
 				nativeQuery2.setParameter("rid", scanStatus.getReservationId());
 				rowCount2 = nativeQuery2.executeUpdate();
-				System.out.println("Rows Affected: " + rowCount2);
+				//System.out.println("Rows Affected: " + rowCount2);
 
 				String sql3 = "UPDATE ParkingSlot " + "SET isSlotBooked = 0 "
 						+ "WHERE id=some(SELECT r.parkingSlotId FROM ParkingReservation r WHERE id=:bid) ";
-				System.out.println(sql3);
+				//System.out.println(sql3);
 				Query nativeQuery3 = session.createQuery(sql3);
 				nativeQuery3.setParameter("bid", scanStatus.getBookingId());
 				rowCount3 = nativeQuery3.executeUpdate();
-				System.out.println("Rows Affected: " + rowCount3);
+				//System.out.println("Rows Affected: " + rowCount3);
 
 			}
 
@@ -422,20 +424,20 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 		if (checkUser) {
 
-			System.out.println("CUSTOMER IS VALID");
+			//System.out.println("CUSTOMER IS VALID");
 
 			// now get this user's all reservations
 			allReservations = getReservarions(customerId);
 
 		} else {
 
-			//
-			System.out.println("INVALID CUSTOMER ID");
+			//System.out.println("INVALID CUSTOMER ID");
 		}
 
 		return allReservations;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<ParkingTicket> getReservarions(int customerId) {
 
 		EntityManager session = entityManagerFactory.createEntityManager();
@@ -443,11 +445,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 		try {
 
 			// Query Reservation Table
-			/*
-			   SELECT p.reservation_id, p.booking_date, p.reservation_status, s.slot_number,
-			   s.wing_code FROM `parking_slot_reservation` AS p INNER JOIN parking_slot AS s
-			   ON p.parking_slot_id = s.id and p.customer_id = 107 ORDER BY p.booking_date DESC
-			 */
+			
 			String sql = "SELECT p.reservation_id, p.booking_date, p.reservation_status, s.slot_number, s.wing_code "
 					+ "FROM parking_slot_reservation AS p INNER JOIN parking_slot AS s "
 					+ "ON p.parking_slot_id = s.id and p.customer_id = :cid ORDER BY p.booking_date DESC";
@@ -455,7 +453,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			query.setParameter("cid", customerId);
 
 			List<Object[]> reservations = query.getResultList();
-			System.out.println("All Reservation Size: " + reservations.size());
+			//System.out.println("All Reservation Size: " + reservations.size());
 
 			allBookings = new ArrayList<ParkingTicket>();
 			for (Object[] objects : reservations) {
@@ -500,7 +498,7 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 			query.setParameter("cid", customerId);
 
 			Customer user = (Customer) query.getSingleResult();
-			System.out.println(user.toString());
+			//System.out.println(user.toString());
 
 			if (user != null && user.getCustomerId() == customerId) {
 
