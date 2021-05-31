@@ -21,7 +21,7 @@
 	<description>Smart Parking Apis and Admin Portal</description>
 
 	<properties>
-		<java.version>15</java.version>
+		<java.version>8</java.version>
 	</properties>
 
 	<dependencies>
@@ -36,8 +36,15 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 
+		<!-- Tomcat -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
@@ -67,7 +74,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>parking</finalName>
+		<finalName>smart</finalName>
 	</build>
 
 </project>
