@@ -68,6 +68,34 @@ public class ParkingReservationController {
 
 		return "Narayan";
 	}
+	
+	/*
+	 * Signal the servo gate to close
+	 * 
+	 * @Method = GET
+	 * 
+	 * @param sate_status
+	 */
+	@GetMapping("/parking/gate/{gateStatus}")
+	public ResponseEntity<HttpStatus> closeServoGate(@PathVariable int gateStatus) {
+
+		try {
+
+			boolean isGateClose = parkingReservationService.closeGate(gateStatus);
+			if(isGateClose) {
+				return new ResponseEntity<>(HttpStatus.OK);
+			}else {
+				return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED); //417
+			}
+			
+
+		} catch (Exception e) {
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+		
+	}
 
 	/*
 	 * Book or Add new parking slot

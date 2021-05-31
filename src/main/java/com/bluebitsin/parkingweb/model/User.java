@@ -6,26 +6,36 @@ public class User {
 
 	@JsonProperty("user_id")
 	private int userId;
-	
+
+	@JsonProperty("agent_code")
+	private String agentCode;
+
 	@JsonProperty("user_name")
 	private String userName;
-	
+
 	@JsonProperty("vechile_number")
 	private String vechileNumber;
-	
+
 	@JsonProperty("vechile_model")
 	private String vechileModel;
-	
+
 	@JsonProperty("mobile_number")
 	private String mobileNumber;
-	
+
 	@JsonProperty("password")
 	private String password;
-
 
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public String getAgentCode() {
+		return agentCode;
+	}
+
+	public void setAgentCode(String agentCode) {
+		this.agentCode = agentCode;
 	}
 
 	public int getUserId() {
@@ -67,7 +77,7 @@ public class User {
 	public void setMobileNumber(String mobileNumber) {
 		this.mobileNumber = mobileNumber;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
@@ -78,8 +88,9 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", vechileNumber=" + vechileNumber
-				+ ", vechileModel=" + vechileModel + ", mobileNumber=" + mobileNumber + ", password=" + password + "]";
+		return "User [userId=" + userId + ", agentCode=" + agentCode + ", userName=" + userName + ", vechileNumber="
+				+ vechileNumber + ", vechileModel=" + vechileModel + ", mobileNumber=" + mobileNumber + ", password="
+				+ password + "]";
 	}
-	
+
 }

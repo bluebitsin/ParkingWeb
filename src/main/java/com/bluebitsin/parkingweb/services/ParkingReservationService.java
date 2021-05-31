@@ -16,5 +16,6 @@ public interface ParkingReservationService {
 	public VerifyQRData verifyParkingTicket(String reservationId);
 	public ResponseEntity<HttpStatus> updateCheckStatus(RequestCheckStatus checkStatus);
 	public List<ParkingTicket> getAllParkingReservation(int customerId);
+	public boolean closeGate(int gateStatus);
 	
 }
