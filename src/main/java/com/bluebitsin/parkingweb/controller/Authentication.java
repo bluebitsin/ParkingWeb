@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bluebitsin.parkingweb.model.Agent;
 import com.bluebitsin.parkingweb.model.User;
 import com.bluebitsin.parkingweb.services.UserService;
 

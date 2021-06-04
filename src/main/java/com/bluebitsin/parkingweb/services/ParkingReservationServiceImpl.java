@@ -567,4 +567,27 @@ public class ParkingReservationServiceImpl implements ParkingReservationService 
 
 	}
 
+	@Override
+	public List<ParkingSlot> getParkingSlots(int customerId) {
+		
+		// check if user is valid
+		boolean checkUser = isUserPresent(customerId);
+		List<ParkingSlot> slotList = null;
+		
+		if (checkUser) {
+
+			// System.out.println("CUSTOMER IS VALID");
+
+			// now get this user's all available spaces
+			slotList = getAllAvailableSlots();
+
+		} else {
+
+			// System.out.println("INVALID CUSTOMER ID");
+		}
+
+		return slotList;
+		
+	}
+
 }

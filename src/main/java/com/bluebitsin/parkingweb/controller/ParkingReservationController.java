@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bluebitsin.parkingweb.model.Customer;
+import com.bluebitsin.parkingweb.model.ParkingSlot;
 import com.bluebitsin.parkingweb.model.ParkingTicket;
 import com.bluebitsin.parkingweb.model.RequestCheckStatus;
 import com.bluebitsin.parkingweb.model.VerifyQRData;
@@ -42,17 +43,17 @@ public class ParkingReservationController {
 	public ResponseEntity<List<ParkingTicket>> getAllReservations(@PathVariable int customerId) {
 
 		List<ParkingTicket> allReservations = parkingReservationService.getAllParkingReservation(customerId);
-		
-		if(allReservations == null) {
-			
+
+		if (allReservations == null) {
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-		
-		if(allReservations.size()<=0) {
-			
+
+		if (allReservations.size() <= 0) {
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		
+
 		return ResponseEntity.of(Optional.of(allReservations));
 	}
 
@@ -68,7 +69,7 @@ public class ParkingReservationController {
 
 		return "Narayan";
 	}
-	
+
 	/*
 	 * Signal the servo gate to close
 	 * 
@@ -82,19 +83,18 @@ public class ParkingReservationController {
 		try {
 
 			boolean isGateClose = parkingReservationService.closeGate(gateStatus);
-			if(isGateClose) {
+			if (isGateClose) {
 				return new ResponseEntity<>(HttpStatus.OK);
-			}else {
-				return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED); //417
+			} else {
+				return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED); // 417
 			}
-			
 
 		} catch (Exception e) {
 
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 		}
-		
+
 	}
 
 	/*
@@ -137,7 +137,7 @@ public class ParkingReservationController {
 		try {
 
 			return parkingReservationService.updateCheckStatus(checkStatus);
-			//return new ResponseEntity<>(HttpStatus.OK);
+			// return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
 
@@ -167,4 +167,42 @@ public class ParkingReservationController {
 		}
 
 	}
+
+	/**
+	 * Get all available parking slots
+	 * 
+	 * @param customerId
+	 * @return List of available slots
+	 */
+	@GetMapping("/parking/slots/{customerId}")
+	public ResponseEntity<List<ParkingSlot>> getAvailableSlots(@PathVariable int customerId) {
+
+		List<ParkingSlot> allAvailaParkingSlots = parkingReservationService.getParkingSlots(customerId);
+
+		if (allAvailaParkingSlots == null) {
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+
+		if (allAvailaParkingSlots.size() <= 0) {
+
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		return ResponseEntity.of(Optional.of(allAvailaParkingSlots));
+
+	}
+
+	/**
+	 * Update IR Sensor Status, Indicate slot is occupied or not
+	 * For Admin Only
+	 * 
+	 * @param sensorId
+	 * @return response code 
+	 */
+	public ResponseEntity<HttpStatus> updateIRSensorStatus(int sensorId){
+		
+		return null;
+	}
+	
 }
